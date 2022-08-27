@@ -21,7 +21,6 @@ function FormPage() {
         "http://localhost:3000/api/developers/",
         values
       );
-      console.log(data);
     } catch (error) {
       console.log(error);
     }

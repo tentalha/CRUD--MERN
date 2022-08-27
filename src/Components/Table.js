@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { ref } from "yup";
 
 function Table() {
   const [users, setUsers] = useState(null);
@@ -8,6 +9,17 @@ function Table() {
   useEffect(() => {
     getUsers();
   }, [refresh]);
+
+  const deleteEntry = async (id) => {
+    try {
+      const data = await axios.delete(
+        `http://localhost:3000/api/developers/${id}`
+      );
+      setRefresh(!refresh);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const getUsers = async () => {
     try {
@@ -48,10 +60,13 @@ function Table() {
                 <td className="border-2">{element.education}</td>
                 <td className="border-2">{element.role}</td>
                 <td className="border-2">
-                  <button className="p-2 bg-[#758283] m-2 w-20 rounded-lg">
+                  <button className="p-2 bg-red-500 m-2 w-20 rounded-lg">
                     Edit
                   </button>
-                  <button className="p-2 bg-[#758283] m-2 w-20 rounded-lg">
+                  <button
+                    className="p-2 bg-red-500 m-2 w-20 rounded-lg"
+                    onClick={() => deleteEntry(element._id)}
+                  >
                     Delete
                   </button>
                 </td>
