@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { ref } from "yup";
+import { Link } from "react-router-dom";
 
 function Table() {
   const [users, setUsers] = useState(null);
@@ -38,7 +38,7 @@ function Table() {
       >
         Refresh
       </button>
-      <table className="table-auto text-white text-center p-3 border-2 my-7">
+      <table className="table-auto text-white text-center p-3 my-7">
         <tr className="border-2">
           <th className="px-4 border-2 w-[150px] h-12">Name</th>
           <th className="px-4 border-2 w-[150px] h-12">Tech Stack</th>
@@ -47,6 +47,8 @@ function Table() {
           <th className="px-4 border-2 w-[150px] h-12">Experience</th>
           <th className="px-4 border-2 w-[150px] h-12">Education</th>
           <th className="px-4 border-2 w-[150px] h-12">Role</th>
+          <th className="px-4 border-2 w-[150px] h-12">Edit</th>
+          <th className="px-4 border-2 w-[150px] h-12">Delete</th>
         </tr>
         {users &&
           users.map((element) => {
@@ -60,9 +62,14 @@ function Table() {
                 <td className="border-2">{element.education}</td>
                 <td className="border-2">{element.role}</td>
                 <td className="border-2">
-                  <button className="p-2 bg-red-500 m-2 w-20 rounded-lg">
+                  <Link
+                    to={`/edit/${element._id}`}
+                    className="p-2 bg-red-500 m-2 w-20 rounded-lg"
+                  >
                     Edit
-                  </button>
+                  </Link>
+                </td>
+                <td className="border-2">
                   <button
                     className="p-2 bg-red-500 m-2 w-20 rounded-lg"
                     onClick={() => deleteEntry(element._id)}

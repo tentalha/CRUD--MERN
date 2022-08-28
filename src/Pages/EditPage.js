@@ -1,49 +1,60 @@
-import React from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import formSchema from "../Schema/formSchema";
-import Table from "../Components/Table"
-import axios from "axios";
 
-function FormPage() {
-  const initialValue = {
-    name: "",
-    age: undefined,
-    techStack: "",
-    currentCompany: undefined,
-    experience: "",
-    education: "",
-    role: "",
-  };
+function EditPage() {
+  useEffect(() => {
+    getSingleUser();
+  }, []);
 
-  const postRequest = async (values) => {
+  const id = useParams().id;
+  const [userData, setUserData] = useState(null);
+  const navigate = useNavigate();
+
+  const getSingleUser = async () => {
     try {
-      await axios.post("http://localhost:3000/api/developers/", values);
+      const data = await axios.get(
+        `http://localhost:3000/api/developers/${id}`
+      );
+      setUserData(data.data);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const {
-    values,
-    errors,
-    handleBlur,
-    handleChange,
-    handleSubmit,
-    touched,
-    resetForm,
-  } = useFormik({
-    initialValues: initialValue,
-    validationSchema: formSchema,
-    onSubmit: () => {
-      postRequest(values);
-      resetForm();
-      alert("Wohoo ! Record added successfully. Refresh to see changes.");
-    },
-  });
+  const initialValue = {
+    name: userData?.name,
+    age: userData?.age,
+    techStack: userData?.techStack,
+    currentCompany: userData?.currentCompany,
+    experience: userData?.experience,
+    education: userData?.education,
+    role: userData?.role,
+  };
+
+  const putRequest = async (values) => {
+    try {
+      await axios.put(`http://localhost:3000/api/developers/${id}`, values);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const { values, errors, handleBlur, handleChange, handleSubmit, touched } =
+    useFormik({
+      initialValues: initialValue,
+      validationSchema: formSchema,
+      onSubmit: () => {
+        putRequest(values);
+        navigate("/");
+      },
+    });
 
   return (
-    <div>
-      <h1 className="my-3 text-2xl text-white text-center">User Form</h1>
+    <div className="h-screen">
+      <h1 className="my-3 text-2xl text-white text-center">Edit Data</h1>
       <form className=" flex flex-col items-center" onSubmit={handleSubmit}>
         <input
           type="text"
@@ -143,9 +154,8 @@ function FormPage() {
           Submit
         </button>
       </form>
-      <Table/>
     </div>
   );
 }
 
-export default FormPage;
+export default EditPage;
